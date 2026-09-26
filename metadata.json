@@ -1,0 +1,8 @@
+{
+  "name": "Gul's | Premium Fragrances",
+  "description": "Discover the art of fragrance with Gul's. Premium scents crafted to leave a lasting impression. Explore our collection of sophisticated perfumes for men and women.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,87 @@
+export const products = [
+  {
+    id: 'laizon',
+    name: 'Laizon',
+    brand: "Gul's",
+    description: 'A soft, elegant embrace of cream and gold notes.',
+    price: '$185',
+    image: '/images/brand-bags.jpeg',
+    category: 'For Her',
+  },
+  {
+    id: 'syfar',
+    name: 'Syfar',
+    brand: "Gul's",
+    description: 'Deep, mysterious woods and amber undertones.',
+    price: '$210',
+    image: '/images/WhatsApp Image 2026-09-26 at 3.25.54 PM.jpeg',
+    category: 'Unisex',
+  },
+  {
+    id: 'gen-x',
+    name: 'Gen X',
+    brand: "Gul's",
+    description: 'Bold, modern, and unapologetically masculine.',
+    price: '$195',
+    image: '/images/WhatsApp Image 2026-09-26 at 3.25.54 PM (1).jpeg',
+    category: 'For Him',
+  },
+  {
+    id: 'hassan-gul',
+    name: 'Hassan Gul',
+    brand: "Gul's",
+    description: 'The signature of a leader. Strength in every note.',
+    price: '$240',
+    image: '/images/WhatsApp Image 2026-09-26 at 3.25.55 PM.jpeg',
+    category: 'For Him',
+  },
+  {
+    id: 'gen-z',
+    name: 'Gen Z',
+    brand: "Gul's",
+    description: 'Vibrant, energetic, and fearlessly expressive.',
+    price: '$175',
+    image: '/images/WhatsApp Image 2026-09-26 at 3.25.55 PM (1).jpeg',
+    category: 'Unisex',
+  },
+  {
+    id: 'jaweria-gul',
+    name: 'Jaweria Gul',
+    brand: "Gul's",
+    description: 'A floral symphony of pure white blossoms.',
+    price: '$230',
+    image: '/images/WhatsApp Image 2026-09-26 at 3.25.56 PM.jpeg',
+    category: 'For Her',
+  },
+  {
+    id: 'so',
+    name: 'So',
+    brand: "Gul's",
+    description: 'Soft lavender fields captured in a bottle.',
+    price: '$190',
+    image: '/images/WhatsApp Image 2026-09-26 at 3.25.56 PM (1).jpeg',
+    category: 'For Her',
+  },
+  {
+    id: 'flip-tone',
+    name: 'Flip Tone',
+    brand: "Gul's",
+    description: 'The perfect balance of duality. For him and her.',
+    price: '$200',
+    image: '/images/WhatsApp Image 2026-09-26 at 3.25.56 PM (2).jpeg',
+    category: 'Unisex',
+  },
+];
+
+export const collections = [
+  {
+    title: 'The Signature Series',
+    subtitle: 'Timeless elegance in every drop.',
+    image: '/images/WhatsApp Image 2026-09-26 at 3.25.58 PM.jpeg',
+  },
+  {
+    title: 'The Noir Collection',
+    subtitle: 'Mysterious, deep, and unforgettable.',
+    image: '/images/WhatsApp Image 2026-09-26 at 3.25.58 PM (2).jpeg',
+  }
+];
