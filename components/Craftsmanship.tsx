@@ -11,8 +11,8 @@ export default function Craftsmanship() {
   ];
 
   return (
-    <section className="py-24 md:py-40 bg-brand-cream px-6">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-20">
+    <section className="py-24 md:py-32 bg-brand-green-rich px-6">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-20">
         <div className="lg:w-1/2">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -20,17 +20,17 @@ export default function Craftsmanship() {
             viewport={{ once: true }}
             className="sticky top-40"
           >
-            <span className="text-brand-burgundy/60 uppercase tracking-[0.4em] text-xs mb-4 block">Excellence in Detail</span>
-            <h2 className="text-4xl md:text-6xl font-serif text-brand-black mb-12">
+            <span className="text-brand-gold/60 uppercase tracking-[0.4em] text-xs mb-4 block">Excellence in Detail</span>
+            <h2 className="text-4xl md:text-5xl font-serif text-white mb-12">
               Crafted to be <br />
-              <span className="italic text-brand-burgundy">Remembered.</span>
+              <span className="italic text-brand-gold">Remembered.</span>
             </h2>
-            
-            <div className="space-y-12">
+
+            <div className="space-y-10">
               {details.map((item, i) => (
-                <div key={i} className="group border-l border-brand-burgundy/20 pl-8 hover:border-brand-burgundy transition-colors duration-500">
-                  <h3 className="text-xl font-serif mb-2 text-brand-black group-hover:text-brand-burgundy transition-colors">{item.title}</h3>
-                  <p className="text-brand-charcoal/60 leading-relaxed text-sm">{item.desc}</p>
+                <div key={i} className="group border-l border-brand-gold/20 pl-8 hover:border-brand-gold transition-colors duration-500">
+                  <h3 className="text-xl font-serif mb-2 text-white group-hover:text-brand-gold transition-colors">{item.title}</h3>
+                  <p className="text-white/60 leading-relaxed text-sm">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -45,11 +45,11 @@ export default function Craftsmanship() {
             className="relative aspect-[3/4] col-span-2 overflow-hidden"
           >
             <Image
-              src="/images/WhatsApp Image 2026-09-26 at 3.26.00 PM.jpeg"
+              src="/images/placeholder-image.jpg"
               alt="Gul's Packaging"
               fill
               className="object-cover"
-              referrerPolicy="no-referrer"
+              sizes="(max-width: 1024px) 100vw, 50vw"
             />
           </motion.div>
           <motion.div
@@ -60,11 +60,11 @@ export default function Craftsmanship() {
             className="relative aspect-square overflow-hidden"
           >
             <Image
-              src="/images/brand-bags.jpeg"
+              src="/images/placeholder-image.jpg"
               alt="Packaging Detail"
               fill
               className="object-cover"
-              referrerPolicy="no-referrer"
+              sizes="(max-width: 1024px) 50vw, 25vw"
             />
           </motion.div>
           <motion.div
@@ -75,11 +75,11 @@ export default function Craftsmanship() {
             className="relative aspect-square overflow-hidden"
           >
             <Image
-              src="/images/heade-footer-reference.jpeg"
+              src="/images/placeholder-image.jpg"
               alt="Gift Bag"
               fill
               className="object-cover"
-              referrerPolicy="no-referrer"
+              sizes="(max-width: 1024px) 50vw, 25vw"
             />
           </motion.div>
         </div>

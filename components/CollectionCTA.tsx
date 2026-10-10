@@ -8,7 +8,7 @@ export default function CollectionCTA() {
     <section className="relative py-32 md:py-48 px-6 overflow-hidden bg-brand-black">
       <div className="absolute inset-0 opacity-40">
         <Image
-          src="/images/WhatsApp Image 2026-09-26 at 3.25.56 PM (2).jpeg"
+          src="/images/placeholder-image.jpg"
           alt="Fragrance Selection"
           fill
           className="object-cover grayscale"

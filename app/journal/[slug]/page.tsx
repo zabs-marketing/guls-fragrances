@@ -70,7 +70,7 @@ export default function SingleArticlePage({ params }: PageProps) {
               The journey of creating a timeless fragrance begins long before the first drop is blended. It starts in the fields, where the finest botanical ingredients are cultivated with care and harvested at the perfect moment to capture their true essence.
             </p>
             <blockquote className="border-l-4 border-brand-gold pl-6 py-2 my-12 text-3xl text-brand-charcoal italic">
-              "A great fragrance is not just a scent, but an emotion captured in a bottle."
+              &quot;A great fragrance is not just a scent, but an emotion captured in a bottle.&quot;
             </blockquote>
             <p>
               Through meticulous distillation and blending, these raw materials are transformed into complex symphonies of scent. Each note is carefully balanced to create a narrative that unfolds over time, revealing different facets as it interacts with the skin.

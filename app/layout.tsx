@@ -1,41 +1,40 @@
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import { Playfair_Display, Inter } from 'next/font/google';
 import './globals.css';
-import { StoreProvider } from '@/context/StoreContext';
+import { StoreProvider } from '@/context/StoreContext'; 
 
-const playfair = Playfair_Display({
+// Setup fonts
+const playfair = Playfair_Display({ 
   subsets: ['latin'],
   variable: '--font-playfair',
   display: 'swap',
 });
 
-const inter = Inter({
+const inter = Inter({ 
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Gul's | Premium Fragrances",
-  description: "Experience the house of Gul's. Sophisticated perfumes and luxury scents for the modern individual.",
-  openGraph: {
-    title: "Gul's | Premium Fragrances",
-    description: "Experience the house of Gul's. Sophisticated perfumes and luxury scents for the modern individual.",
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: "Gul's | Premium Fragrances",
-    description: "Experience the house of Gul's. Sophisticated perfumes and luxury scents for the modern individual.",
-  },
+  title: "Gul's Collection | Wear Your Era",
+  description: "Premium fragrances crafted for identity. Made to last. Bringing luxury niche fragrances within reach.",
+  keywords: "perfume, fragrance, Gul's Collection, luxury perfume Pakistan, wear your era",
 };
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
-      <body suppressHydrationWarning className="bg-[#FAF9F6] text-[#1A1A1A] antialiased">
+      <body className="flex flex-col min-h-screen w-full relative">
         <StoreProvider>
-          {children}
+          {/* Main content wrapper */}
+          <div className="flex-grow w-full flex flex-col">
+            {children}
+          </div>
         </StoreProvider>
       </body>
     </html>

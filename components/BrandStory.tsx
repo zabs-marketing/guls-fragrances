@@ -7,7 +7,7 @@ export default function BrandStory() {
   return (
     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
       <Image
-        src="/images/WhatsApp Image 2026-09-26 at 3.25.58 PM.jpeg"
+        src="/images/placeholder-image.jpg"
         alt="The Soul of Gul's"
         fill
         className="object-cover"
@@ -28,7 +28,7 @@ export default function BrandStory() {
             <span className="italic">SIGNATURE.</span>
           </h2>
           <p className="text-white/90 text-lg md:text-xl font-light leading-relaxed mb-12 max-w-2xl mx-auto italic">
-            "A fragrance is like a signature, so that even after a woman leaves the room, her perfume should reveal she's been there."
+            &quot;A fragrance is like a signature, so that even after a woman leaves the room, her perfume should reveal she&apos;s been there.&quot;
           </p>
           <button className="px-12 py-5 border border-white text-white uppercase tracking-widest text-[10px] font-semibold hover:bg-white hover:text-brand-burgundy transition-all duration-500">
             Read Our Journal

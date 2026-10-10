@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { products } from '@/lib/data';
 
 interface CartItem {
@@ -40,6 +40,18 @@ export interface JournalPost {
   featuredScents?: string[];
 }
 
+export interface OrderFormData {
+  email: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  zipCode: string;
+  cardNumber: string;
+  expiry: string;
+  cvv: string;
+}
+
 const defaultJournalPosts: JournalPost[] = [
   {
     slug: 'art-of-distillation',
@@ -49,7 +61,7 @@ const defaultJournalPosts: JournalPost[] = [
     date: 'Oct 12, 2026',
     readTime: '4 min read',
     image: '/images/hero-sections-reference.jpeg',
-    featuredScents: ['laizon', 'syfar']
+    featuredScents: ['laizon', 'syfar'],
   },
   {
     slug: 'winter-warmth',
@@ -59,8 +71,8 @@ const defaultJournalPosts: JournalPost[] = [
     date: 'Nov 05, 2026',
     readTime: '3 min read',
     image: '/images/brand-bags.jpeg',
-    featuredScents: ['gen-x', 'hassan-gul']
-  }
+    featuredScents: ['gen-x', 'hassan-gul'],
+  },
 ];
 
 interface StoreContextType {
@@ -74,7 +86,7 @@ interface StoreContextType {
   login: (user: User) => void;
   logout: () => void;
   orders: Order[];
-  placeOrder: (orderData: any) => void;
+  placeOrder: (orderData: OrderFormData) => void;
   updateOrderStatus: (orderId: string, status: OrderStatus) => void;
   journalPosts: JournalPost[];
 }
@@ -87,23 +99,32 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [journalPosts] = useState<JournalPost[]>(defaultJournalPosts);
 
-  // Load from localStorage
+  // Guard: don't persist cart to localStorage until we've loaded from it first.
+  // This prevents the initial empty-cart state from overwriting saved data.
+  const isHydrated = useRef(false);
+
+  // Load from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem('guls_cart');
     const savedUser = localStorage.getItem('guls_user');
     const savedOrders = localStorage.getItem('guls_orders');
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (savedCart) setCart(JSON.parse(savedCart));
     if (savedUser) setUser(JSON.parse(savedUser));
     if (savedOrders) setOrders(JSON.parse(savedOrders));
+
+    isHydrated.current = true;
   }, []);
 
-  // Save to localStorage
+  // Persist cart — only after initial hydration from localStorage
   useEffect(() => {
+    if (!isHydrated.current) return;
     localStorage.setItem('guls_cart', JSON.stringify(cart));
   }, [cart]);
 
   useEffect(() => {
+    if (!isHydrated.current) return;
     if (user) {
       localStorage.setItem('guls_user', JSON.stringify(user));
     } else {
@@ -112,6 +133,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   useEffect(() => {
+    if (!isHydrated.current) return;
     localStorage.setItem('guls_orders', JSON.stringify(orders));
   }, [orders]);
 
@@ -134,7 +156,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         {
           id: product.id,
           name: product.name,
-          price: parseInt(product.price.replace('$', '')),
+          price: product.price, // Already a number — no parsing needed
           image: product.image,
           quantity,
         },
@@ -160,21 +182,27 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
-  const placeOrder = (orderData: any) => {
+  const placeOrder = (orderData: OrderFormData) => {
     const newOrder: Order = {
       id: `GUL-${Math.floor(Math.random() * 1000000)}`,
-      date: new Date().toLocaleDateString(),
+      date: new Date().toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }),
       total: cartTotal,
       items: [...cart],
-      status: 'Pending', // New orders start as Pending
-      customer: user ? { name: user.name, email: user.email, address: orderData.address } : orderData.customer
+      status: 'Pending',
+      customer: user
+        ? { name: user.name, email: user.email, address: orderData.address }
+        : { name: `${orderData.firstName} ${orderData.lastName}`, email: orderData.email, address: orderData.address },
     };
     setOrders((prev) => [newOrder, ...prev]);
     clearCart();
   };
 
   const updateOrderStatus = (orderId: string, status: OrderStatus) => {
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o));
+    setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
   };
 
   return (

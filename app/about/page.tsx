@@ -7,131 +7,147 @@ import Footer from '@/components/Footer';
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-brand-green-dark text-white overflow-hidden">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative h-[70vh] w-full flex items-center justify-center overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative h-[60vh] md:h-[70vh] w-full flex items-center justify-center overflow-hidden">
         <Image
-          src="/images/WhatsApp Image 2026-09-26 at 3.25.58 PM.jpeg"
+          src="/images/new-launch.jpeg" // Replaced placeholder with an actual existing image
           alt="The House of Gul's"
           fill
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 text-center text-white px-6">
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-brand-green-dark/70" />
+        
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
-            <span className="text-[10px] uppercase tracking-[0.5em] mb-6 block opacity-80">Established in Excellence</span>
-            <h1 className="text-5xl md:text-8xl font-serif tracking-tight leading-none">
-              OUR <span className="italic">HERITAGE</span>
+            <span className="text-[10px] md:text-xs uppercase tracking-[0.4em] mb-4 md:mb-6 block text-brand-gold font-medium">
+              Decades of Scents
+            </span>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif tracking-tight leading-none text-white">
+              WEAR YOUR <span className="italic text-brand-gold">ERA.</span>
             </h1>
           </motion.div>
         </div>
       </section>
 
-      {/* Story Section */}
-      <section className="py-24 md:py-40 px-6 md:px-12 bg-brand-cream">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-32">
+      {/* About Us / Story Section */}
+      <section className="py-20 md:py-32 px-6 md:px-12 lg:px-16 bg-[#0a1f11]">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
           <div className="w-full lg:w-1/2">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl md:text-6xl font-serif text-brand-black mb-12 leading-tight">
-                The Essence of <br />
-                <span className="italic text-brand-burgundy">Gul's.</span>
+              <p className="text-[10px] uppercase tracking-[0.3em] font-semibold text-brand-gold mb-3">
+                01. About Us
+              </p>
+              <h2 className="text-3xl md:text-5xl font-serif text-white mb-8 leading-tight">
+                A Time Capsule in <br />
+                <span className="italic text-brand-gold">Every Bottle.</span>
               </h2>
-              <div className="space-y-8 text-brand-charcoal/70 leading-relaxed text-lg font-light">
+              <div className="space-y-6 text-white/70 leading-relaxed text-sm md:text-base font-light">
                 <p>
-                  Born from a passion for the olfactive arts, Gul's is a boutique fragrance house dedicated to the creation of scents that transcend time and trend. Our journey began with a simple belief: that a fragrance should be more than just a pleasant aroma—it should be a profound emotional experience.
+                  Gul&apos;s Collection is not just a fragrance house - it&apos;s a time capsule. Born from the idea that every decade has a scent, and every person has an era, Decades by Gul&apos;s was created to let you wear your era.
                 </p>
                 <p>
-                  We source the rarest botanicals and the finest synthetics from around the globe, blending them with meticulous precision in our atelier. Every flacon is a masterpiece of design, every drop a tribute to the craft of niche perfumery.
+                  We craft premium, long-lasting, impression-based perfumes that bring luxury niche fragrances within reach. From bold masculine to soft feminine, from unisex modern to deep arabesque—our scents are designed to become your identity.
                 </p>
-                <div className="pt-8 flex items-center gap-6">
-                  <div className="text-center">
-                    <span className="block text-3xl font-serif text-brand-burgundy mb-2">100%</span>
-                    <span className="text-[9px] uppercase tracking-widest font-bold">Pure Craft</span>
+                
+                {/* Vision & Mission Mini-Stats */}
+                <div className="pt-6 grid grid-cols-2 gap-6 border-t border-brand-gold/10 mt-8">
+                  <div>
+                    <span className="block text-brand-gold font-serif text-xl mb-1">Our Vision</span>
+                    <span className="text-xs text-white/60">Defining generations through scent.</span>
                   </div>
-                  <div className="w-px h-12 bg-brand-burgundy/10" />
-                  <div className="text-center">
-                    <span className="block text-3xl font-serif text-brand-burgundy mb-2">Global</span>
-                    <span className="text-[9px] uppercase tracking-widest font-bold">Inspiration</span>
-                  </div>
-                  <div className="w-px h-12 bg-brand-burgundy/10" />
-                  <div className="text-center">
-                    <span className="block text-3xl font-serif text-brand-burgundy mb-2">Niche</span>
-                    <span className="text-[9px] uppercase tracking-widest font-bold">Quality</span>
+                  <div>
+                    <span className="block text-brand-gold font-serif text-xl mb-1">Our Mission</span>
+                    <span className="text-xs text-white/60">Luxury. Craftsmanship. Accessibility.</span>
                   </div>
                 </div>
               </div>
             </motion.div>
           </div>
-          <div className="w-full lg:w-1/2 relative aspect-square">
+          
+          <div className="w-full lg:w-1/2 relative aspect-square max-w-md mx-auto lg:max-w-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               className="relative h-full w-full"
             >
               <Image
-                src="/images/WhatsApp Image 2026-09-26 at 3.25.59 PM.jpeg"
+                src="/images/brand-bags.jpeg"
                 alt="Brand Heritage"
                 fill
-                className="object-cover"
-                referrerPolicy="no-referrer"
+                className="object-cover rounded-sm"
               />
-              <div className="absolute inset-0 border border-brand-burgundy/10 m-8" />
+              <div className="absolute inset-0 border border-brand-gold/20 m-4 md:m-8 rounded-sm pointer-events-none" />
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="py-24 md:py-40 px-6 md:px-12">
+      {/* Core Values Section */}
+      <section className="py-20 md:py-32 px-6 md:px-12 lg:px-16">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-serif text-brand-black mb-6">Our Philosophy</h2>
-            <p className="text-brand-charcoal/60 max-w-xl mx-auto italic">"Excellence is not an act, but a habit of the soul."</p>
+          <div className="text-center mb-16 md:mb-24">
+            <p className="text-[10px] uppercase tracking-[0.3em] font-semibold text-brand-gold mb-3">
+              04. Our Core Values
+            </p>
+            <h2 className="text-3xl md:text-4xl font-serif text-white mb-4">A Scent For Every Era</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+            
             <div className="text-center group">
-              <div className="mb-8 relative mx-auto w-24 h-24 flex items-center justify-center">
-                <div className="absolute inset-0 bg-brand-cream group-hover:scale-110 group-hover:bg-brand-burgundy transition-all duration-500 rounded-full" />
-                <span className="relative z-10 text-2xl font-serif text-brand-burgundy group-hover:text-white transition-colors">01</span>
+              <div className="mb-6 mx-auto w-16 h-16 border border-brand-gold/20 rounded-full flex items-center justify-center group-hover:border-brand-gold group-hover:bg-brand-gold/5 transition-all duration-300">
+                <span className="text-xl font-serif text-brand-gold">Q</span>
               </div>
-              <h3 className="text-xl font-serif mb-4">Uncompromising Quality</h3>
-              <p className="text-sm text-brand-charcoal/60 leading-relaxed">
-                We never compromise on the ingredients or the process. If it isn't perfect, it isn't Gul's.
+              <h3 className="text-lg font-serif mb-3 text-white">Quality First.</h3>
+              <p className="text-xs text-white/60 leading-relaxed px-4">
+                Only the finest ingredients. Always. Carefully selected notes crafted for a lasting impression.
               </p>
             </div>
+
             <div className="text-center group">
-              <div className="mb-8 relative mx-auto w-24 h-24 flex items-center justify-center">
-                <div className="absolute inset-0 bg-brand-cream group-hover:scale-110 group-hover:bg-brand-burgundy transition-all duration-500 rounded-full" />
-                <span className="relative z-10 text-2xl font-serif text-brand-burgundy group-hover:text-white transition-colors">02</span>
+              <div className="mb-6 mx-auto w-16 h-16 border border-brand-gold/20 rounded-full flex items-center justify-center group-hover:border-brand-gold group-hover:bg-brand-gold/5 transition-all duration-300">
+                <span className="text-xl font-serif text-brand-gold">L</span>
               </div>
-              <h3 className="text-xl font-serif mb-4">Artistic Expression</h3>
-              <p className="text-sm text-brand-charcoal/60 leading-relaxed">
-                Fragrance is art. We provide our perfumers with total creative freedom to explore the unknown.
+              <h3 className="text-lg font-serif mb-3 text-white">Longevity Guaranteed.</h3>
+              <p className="text-xs text-white/60 leading-relaxed px-4">
+                Scents that stay with you. High concentration formula for a fragrance that lasts 10+ hours.
               </p>
             </div>
+
             <div className="text-center group">
-              <div className="mb-8 relative mx-auto w-24 h-24 flex items-center justify-center">
-                <div className="absolute inset-0 bg-brand-cream group-hover:scale-110 group-hover:bg-brand-burgundy transition-all duration-500 rounded-full" />
-                <span className="relative z-10 text-2xl font-serif text-brand-burgundy group-hover:text-white transition-colors">03</span>
+              <div className="mb-6 mx-auto w-16 h-16 border border-brand-gold/20 rounded-full flex items-center justify-center group-hover:border-brand-gold group-hover:bg-brand-gold/5 transition-all duration-300">
+                <span className="text-xl font-serif text-brand-gold">E</span>
               </div>
-              <h3 className="text-xl font-serif mb-4">Lasting Impression</h3>
-              <p className="text-sm text-brand-charcoal/60 leading-relaxed">
-                We design scents that linger, creating a powerful presence that remains long after you depart.
+              <h3 className="text-lg font-serif mb-3 text-white">Era Defined.</h3>
+              <p className="text-xs text-white/60 leading-relaxed px-4">
+                More than a scent—it&apos;s a time capsule. Timeless scents for every mood, moment and personality.
               </p>
             </div>
+
+            <div className="text-center group">
+              <div className="mb-6 mx-auto w-16 h-16 border border-brand-gold/20 rounded-full flex items-center justify-center group-hover:border-brand-gold group-hover:bg-brand-gold/5 transition-all duration-300">
+                <span className="text-xl font-serif text-brand-gold">C</span>
+              </div>
+              <h3 className="text-lg font-serif mb-3 text-white">Customer Obsessed.</h3>
+              <p className="text-xs text-white/60 leading-relaxed px-4">
+                Your experience matters most. From premium imported oils to exquisite packaging.
+              </p>
+            </div>
+
           </div>
         </div>
       </section>
