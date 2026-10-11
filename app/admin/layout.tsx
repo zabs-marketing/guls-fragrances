@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { LayoutDashboard, Package, ShoppingCart, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, LogOut, Tag } from 'lucide-react';
 
 export default function AdminLayout({
   children,
@@ -34,6 +34,15 @@ export default function AdminLayout({
           >
             <LayoutDashboard size={18} />
             Dashboard
+          </Link>
+          <Link 
+            href="/admin/categories" 
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors ${
+              pathname?.startsWith('/admin/categories') ? 'bg-[#f4f1eb] text-black font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+            }`}
+          >
+            <Tag size={18} />
+            Categories
           </Link>
           <Link 
             href="/admin/products" 
