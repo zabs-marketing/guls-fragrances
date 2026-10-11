@@ -25,7 +25,7 @@ export async function PATCH(req: Request, { params }: Params) {
       return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 422 });
     }
 
-    const { name, slug } = parsed.data;
+    const { name, slug, image, isActive } = parsed.data;
 
     const slugConflict = await prisma.category.findFirst({
       where: { slug, NOT: { id: categoryId } },
@@ -36,7 +36,12 @@ export async function PATCH(req: Request, { params }: Params) {
 
     const updated = await prisma.category.update({
       where: { id: categoryId },
-      data: { name, slug },
+      data: {
+        name,
+        slug,
+        image: image || null,
+        isActive,
+      },
     });
     return NextResponse.json(updated);
   } catch (error) {
@@ -72,4 +77,3 @@ export async function DELETE(_req: Request, { params }: Params) {
     return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 });
   }
 }
-

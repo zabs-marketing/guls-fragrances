@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useTransition } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema, type ProductFormValues } from '@/lib/validators';
 import {
   Plus, Pencil, Trash2, X, Package, Loader2, ChevronDown,
+  Search, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import Image from 'next/image';
 import ConfirmDeleteModal from '@/components/admin/ConfirmDeleteModal';
@@ -74,7 +75,6 @@ function ProductFormModal({ product, categories, onClose, onSuccess }: ProductFo
     handleSubmit,
     control,
     watch,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -121,14 +121,14 @@ function ProductFormModal({ product, categories, onClose, onSuccess }: ProductFo
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm overflow-y-auto py-10 px-4">
-      <div className="w-full max-w-2xl bg-white rounded-xl shadow-2xl border border-gray-100">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-xs overflow-y-auto py-6 sm:py-10 px-4">
+      <div className="w-full max-w-2xl bg-white rounded-xl shadow-2xl border border-gray-100 my-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-lg font-semibold text-gray-900">
             {product ? 'Edit Product' : 'New Product'}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+          <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -152,7 +152,7 @@ function ProductFormModal({ product, categories, onClose, onSuccess }: ProductFo
               </Field>
               <Field label="Category" error={errors.categoryId?.message}>
                 <div className="relative">
-                  <select {...register('categoryId')} className={`${inputCls} appearance-none pr-10`}>
+                  <select {...register('categoryId')} className={`${inputCls} appearance-none pr-10 bg-white`}>
                     <option value="">Select a category</option>
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>{c.name}</option>
@@ -233,9 +233,9 @@ function ProductFormModal({ product, categories, onClose, onSuccess }: ProductFo
                 type="checkbox"
                 id="isSpecialEdition"
                 {...register('isSpecialEdition')}
-                className="w-4 h-4 accent-[#d4af37]"
+                className="w-4 h-4 rounded text-[#d4af37] focus:ring-[#d4af37] border-gray-300"
               />
-              <label htmlFor="isSpecialEdition" className="text-sm text-gray-700">
+              <label htmlFor="isSpecialEdition" className="text-sm text-gray-700 cursor-pointer font-medium">
                 Mark as Special Edition
               </label>
             </div>
@@ -251,7 +251,7 @@ function ProductFormModal({ product, categories, onClose, onSuccess }: ProductFo
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
             <button
               type="button"
               onClick={onClose}
@@ -262,7 +262,7 @@ function ProductFormModal({ product, categories, onClose, onSuccess }: ProductFo
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-900 transition-colors disabled:opacity-60 flex items-center gap-2"
+              className="px-5 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-900 transition-colors disabled:opacity-60 flex items-center gap-2"
             >
               {isSubmitting ? (
                 <><Loader2 size={14} className="animate-spin" /> Saving…</>
@@ -284,6 +284,16 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Server-Side Search, Filter & Pagination states
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [stockStatus, setStockStatus] = useState<string>('all');
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ total: 0, totalPages: 1, limit: 10 });
+
+  const [, startTransition] = useTransition();
+
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | undefined>();
 
@@ -291,24 +301,53 @@ export default function ProductsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
+  // Debounce search input
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 350);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  // Load category options once for dropdown
+  useEffect(() => {
+    fetch('/api/admin/categories?all=true')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setCategories(data);
+      })
+      .catch((err) => console.error('Failed to load category dropdown options:', err));
+  }, []);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [pRes, cRes] = await Promise.all([
-        fetch('/api/admin/products'),
-        fetch('/api/admin/categories'),
-      ]);
-      if (!pRes.ok || !cRes.ok) throw new Error('Fetch failed');
-      setProducts(await pRes.json());
-      setCategories(await cRes.json());
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '10',
+        search: debouncedSearch,
+        categoryId: selectedCategory,
+        stockStatus: stockStatus,
+      });
+
+      const res = await fetch(`/api/admin/products?${params.toString()}`);
+      if (!res.ok) throw new Error('Fetch failed');
+      const data = await res.json();
+      setProducts(data.products || []);
+      setPagination(data.pagination || { total: 0, totalPages: 1, limit: 10 });
     } catch {
-      setError('Could not load data. Please refresh.');
+      setError('Could not load products. Please refresh.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page, debouncedSearch, selectedCategory, stockStatus]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    startTransition(() => {
+      fetchData();
+    });
+  }, [fetchData]);
 
   const openCreate = () => { setEditingProduct(undefined); setShowModal(true); };
   const openEdit = (p: Product) => { setEditingProduct(p); setShowModal(true); };
@@ -334,17 +373,17 @@ export default function ProductsPage() {
     <>
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
               <Package size={22} />
               Products
             </h1>
-            <p className="text-gray-500 text-sm mt-1">Manage your fragrance catalogue.</p>
+            <p className="text-gray-500 text-sm mt-1">Manage your fragrance catalogue at enterprise scale.</p>
           </div>
           <button
             onClick={openCreate}
-            className="flex items-center gap-2 px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-900 transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-900 transition-colors shadow-xs"
           >
             <Plus size={16} /> New Product
           </button>
@@ -356,25 +395,70 @@ export default function ProductsPage() {
           </div>
         )}
 
-        {/* Table */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100">
-            <span className="text-sm font-medium text-gray-700">
-              {products.length} {products.length === 1 ? 'product' : 'products'}
+        {/* Filters & Search Toolbar */}
+        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              type="text"
+              placeholder="Search product by name, brand or note…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:border-[#d4af37]"
+            />
+          </div>
+
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+            <select
+              value={selectedCategory}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                setPage(1);
+              }}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4af37] w-full sm:w-auto"
+            >
+              <option value="all">All Categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+
+            <select
+              value={stockStatus}
+              onChange={(e) => {
+                setStockStatus(e.target.value);
+                setPage(1);
+              }}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#d4af37] w-full sm:w-auto"
+            >
+              <option value="all">All Stock Levels</option>
+              <option value="in_stock">In Stock (&gt; 0)</option>
+              <option value="low_stock">Low Stock (≤ 10)</option>
+              <option value="out_of_stock">Out of Stock</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Data Table */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-xs overflow-hidden">
+          <div className="px-6 py-3.5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              Showing {products.length} of {pagination.total} products
             </span>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
+              <Loader2 className="w-7 h-7 text-gray-400 animate-spin" />
             </div>
           ) : error ? (
             <p className="text-center py-12 text-sm text-red-500">{error}</p>
           ) : products.length === 0 ? (
-            <div className="text-center py-16">
+            <div className="text-center py-16 px-4">
               <Package className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm">No products yet.</p>
-              <button onClick={openCreate} className="mt-3 text-sm text-black underline">
+              <p className="text-gray-600 text-sm font-medium">No products found.</p>
+              <p className="text-gray-400 text-xs mt-1">Try adjusting your search criteria or add a product.</p>
+              <button onClick={openCreate} className="mt-4 text-sm text-black underline font-medium">
                 Add your first product
               </button>
             </div>
@@ -382,33 +466,33 @@ export default function ProductsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-100">
-                    <th className="text-left px-6 py-3 font-medium text-gray-500">Product</th>
-                    <th className="text-left px-6 py-3 font-medium text-gray-500">Category</th>
-                    <th className="text-right px-6 py-3 font-medium text-gray-500">Price</th>
-                    <th className="text-center px-6 py-3 font-medium text-gray-500">Stock</th>
-                    <th className="px-6 py-3" />
+                  <tr className="bg-gray-50/80 border-b border-gray-100 text-xs uppercase tracking-wider">
+                    <th className="text-left px-6 py-3.5 font-semibold text-gray-500">Product</th>
+                    <th className="text-left px-6 py-3.5 font-semibold text-gray-500">Category</th>
+                    <th className="text-right px-6 py-3.5 font-semibold text-gray-500">Price</th>
+                    <th className="text-center px-6 py-3.5 font-semibold text-gray-500">Stock</th>
+                    <th className="text-right px-6 py-3.5 font-semibold text-gray-500">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {products.map((p) => (
-                    <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
+                    <tr key={p.id} className="hover:bg-gray-50/70 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           {p.imageURL ? (
-                            <div className="w-10 h-10 relative rounded-md overflow-hidden flex-shrink-0 bg-gray-100">
+                            <div className="w-10 h-10 relative rounded-md overflow-hidden shrink-0 bg-gray-100 border border-gray-200">
                               <Image src={p.imageURL} alt={p.name} fill className="object-cover" unoptimized />
                             </div>
                           ) : (
-                            <div className="w-10 h-10 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
-                              <Package size={16} className="text-gray-400" />
+                            <div className="w-10 h-10 rounded-md bg-gray-100 flex items-center justify-center shrink-0 border border-gray-200 text-gray-400">
+                              <Package size={16} />
                             </div>
                           )}
                           <div>
                             <div className="font-medium text-gray-900 flex items-center gap-2">
                               {p.name}
                               {p.isSpecialEdition && (
-                                <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">
+                                <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">
                                   Special
                                 </span>
                               )}
@@ -417,35 +501,35 @@ export default function ProductsPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-gray-500">{p.category.name}</td>
-                      <td className="px-6 py-4 text-right font-medium text-gray-900">
+                      <td className="px-6 py-4 text-gray-600 font-medium">{p.category?.name || 'Uncategorized'}</td>
+                      <td className="px-6 py-4 text-right font-semibold text-gray-900">
                         PKR {parseFloat(p.price).toLocaleString()}
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span
                           className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             p.stockQuantity === 0
-                              ? 'bg-red-100 text-red-700'
-                              : p.stockQuantity < 10
-                              ? 'bg-amber-100 text-amber-700'
-                              : 'bg-green-100 text-green-700'
+                              ? 'bg-red-50 text-red-700 border border-red-200/60'
+                              : p.stockQuantity <= 10
+                              ? 'bg-amber-50 text-amber-700 border border-amber-200/60'
+                              : 'bg-green-50 text-green-700 border border-green-200/60'
                           }`}
                         >
-                          {p.stockQuantity === 0 ? 'Out of stock' : p.stockQuantity}
+                          {p.stockQuantity === 0 ? 'Out of stock' : `${p.stockQuantity} in stock`}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-end gap-2">
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => openEdit(p)}
-                            className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                            className="p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                             title="Edit"
                           >
                             <Pencil size={15} />
                           </button>
                           <button
                             onClick={() => { setDeleteError(''); setDeleteTarget(p); }}
-                            className="p-1.5 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                            className="p-2 rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
                             title="Delete"
                           >
                             <Trash2 size={15} />
@@ -456,6 +540,31 @@ export default function ProductsPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {/* Pagination Controls */}
+          {pagination.totalPages > 1 && (
+            <div className="px-6 py-3.5 border-t border-gray-100 flex items-center justify-between text-sm">
+              <span className="text-xs text-gray-500">
+                Page {page} of {pagination.totalPages}
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="p-1.5 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
+                  disabled={page >= pagination.totalPages}
+                  className="p-1.5 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -473,7 +582,7 @@ export default function ProductsPage() {
       <ConfirmDeleteModal
         isOpen={!!deleteTarget}
         title={`Delete "${deleteTarget?.name}"?`}
-        description="This will permanently remove the product. This cannot be undone."
+        description="This will permanently delete the product. This action cannot be undone."
         isDeleting={isDeleting}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
@@ -481,4 +590,3 @@ export default function ProductsPage() {
     </>
   );
 }
-

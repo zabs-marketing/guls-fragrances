@@ -77,7 +77,7 @@ const defaultJournalPosts: JournalPost[] = [
 
 interface StoreContextType {
   cart: CartItem[];
-  addToCart: (productId: string, quantity?: number) => void;
+  addToCart: (productId: string, quantity?: number, itemDetails?: { name: string; price: number; image: string }) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -140,9 +140,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const login = (userData: User) => setUser(userData);
   const logout = () => setUser(null);
 
-  const addToCart = (productId: string, quantity: number = 1) => {
-    const product = products.find((p) => p.id === productId);
-    if (!product) return;
+  const addToCart = (
+    productId: string,
+    quantity: number = 1,
+    itemDetails?: { name: string; price: number; image: string }
+  ) => {
+    const fallbackProduct = products.find((p) => p.id === productId);
+    const itemData = itemDetails
+      ? {
+          id: productId,
+          name: itemDetails.name,
+          price: itemDetails.price,
+          image: itemDetails.image,
+        }
+      : fallbackProduct
+      ? {
+          id: fallbackProduct.id,
+          name: fallbackProduct.name,
+          price: fallbackProduct.price,
+          image: fallbackProduct.image,
+        }
+      : null;
+
+    if (!itemData) return;
 
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === productId);
@@ -154,10 +174,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       return [
         ...prevCart,
         {
-          id: product.id,
-          name: product.name,
-          price: product.price, // Already a number — no parsing needed
-          image: product.image,
+          id: itemData.id,
+          name: itemData.name,
+          price: itemData.price,
+          image: itemData.image,
           quantity,
         },
       ];

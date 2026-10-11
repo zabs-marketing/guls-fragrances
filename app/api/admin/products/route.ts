@@ -2,18 +2,66 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { requireAdminSession } from '@/lib/auth-helpers';
 import { productSchema } from '@/lib/validators';
+import { Prisma } from '@prisma/client';
 
-// GET /api/admin/products – list all products with category name
-export async function GET() {
+// GET /api/admin/products – list products with server-side pagination, search, and category/stock filtering
+export async function GET(req: Request) {
   const unauth = await requireAdminSession();
   if (unauth) return unauth;
 
   try {
-    const products = await prisma.product.findMany({
-      orderBy: { name: 'asc' },
-      include: { category: { select: { id: true, name: true } } },
+    const { searchParams } = new URL(req.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1') || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '10') || 10));
+    const search = searchParams.get('search')?.trim() || '';
+    const categoryId = searchParams.get('categoryId') || 'all';
+    const stockStatus = searchParams.get('stockStatus') || 'all';
+
+    const where: Prisma.ProductWhereInput = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search } },
+        { brand: { contains: search } },
+        { description: { contains: search } },
+      ];
+    }
+
+    if (categoryId && categoryId !== 'all') {
+      const parsedCatId = parseInt(categoryId);
+      if (!isNaN(parsedCatId)) {
+        where.categoryId = parsedCatId;
+      }
+    }
+
+    if (stockStatus === 'in_stock') {
+      where.stockQuantity = { gt: 0 };
+    } else if (stockStatus === 'out_of_stock') {
+      where.stockQuantity = { lte: 0 };
+    } else if (stockStatus === 'low_stock') {
+      where.stockQuantity = { gt: 0, lte: 10 };
+    }
+
+    const [total, products] = await Promise.all([
+      prisma.product.count({ where }),
+      prisma.product.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { name: 'asc' },
+        include: { category: { select: { id: true, name: true } } },
+      }),
+    ]);
+
+    return NextResponse.json({
+      products,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit) || 1,
+      },
     });
-    return NextResponse.json(products);
   } catch (error) {
     console.error('[GET /api/admin/products]', error);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
@@ -57,4 +105,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
   }
 }
-

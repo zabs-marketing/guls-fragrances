@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import BrandIntro from '@/components/BrandIntro';
+import EditionsShowcase from '@/components/EditionsShowcase';
 import FeaturedCollection from '@/components/FeaturedCollection';
 import CategorySplit from '@/components/CategorySplit';
 import SignatureFragrances from '@/components/SignatureFragrances';
@@ -15,6 +16,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <BrandIntro />
+      <EditionsShowcase />
       <FeaturedCollection />
       <CategorySplit />
       <SignatureFragrances />

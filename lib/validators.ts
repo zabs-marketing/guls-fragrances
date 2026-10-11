@@ -11,6 +11,8 @@ export const categorySchema = z.object({
     .min(2, 'Slug must be at least 2 characters')
     .max(80, 'Slug must be under 80 characters')
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase letters, numbers, and hyphens only'),
+  image: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  isActive: z.boolean(),
 });
 
 export type CategoryFormValues = z.infer<typeof categorySchema>;
