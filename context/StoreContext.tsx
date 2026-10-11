@@ -42,6 +42,7 @@ export interface JournalPost {
 
 export interface OrderFormData {
   email: string;
+  phone?: string;
   firstName: string;
   lastName: string;
   address: string;

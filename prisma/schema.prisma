@@ -55,25 +55,44 @@ model Product {
   @@index([price])
 }
 
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  DISPATCHED
+  COMPLETED
+  CANCELLED
+}
+
 model Order {
-  id            Int         @id @default(autoincrement())
-  customerName  String
-  customerEmail String
-  customerPhone String
-  address       String      @db.Text
-  totalAmount   Decimal     @db.Decimal(10, 2)
-  status        String      @default("Pending") // Pending, Shipped, Delivered
-  createdAt     DateTime    @default(now())
-  orderItems    OrderItem[]
+  id                 Int         @id @default(autoincrement())
+  orderNumber        String      @unique
+  customerName       String
+  customerEmail      String
+  customerPhone      String
+  shippingAddress    String      @db.Text
+  totalAmount        Decimal     @db.Decimal(10, 2)
+  status             OrderStatus @default(PENDING)
+  cancellationReason String?     @db.Text
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  orderItems         OrderItem[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([customerEmail])
+  @@index([customerPhone])
 }
 
 model OrderItem {
-  id             Int     @id @default(autoincrement())
-  orderId        Int
-  order          Order   @relation(fields: [orderId], references: [id])
-  productId      Int
-  product        Product @relation(fields: [productId], references: [id])
-  quantity       Int
+  id              Int     @id @default(autoincrement())
+  orderId         Int
+  order           Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       Int
+  product         Product @relation(fields: [productId], references: [id])
+  quantity        Int
   priceAtPurchase Decimal @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@index([productId])
 }
 

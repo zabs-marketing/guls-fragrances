@@ -14,8 +14,13 @@ export default function CheckoutPage() {
   const { cart, cartTotal, placeOrder } = useStore();
   const router = useRouter();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [placedOrderNumber, setPlacedOrderNumber] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderError, setOrderError] = useState('');
+
   const [formData, setFormData] = useState<OrderFormData>({
     email: '',
+    phone: '',
     firstName: '',
     lastName: '',
     address: '',
@@ -45,11 +50,39 @@ export default function CheckoutPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    placeOrder(formData);
-    setIsSuccess(true);
-    window.scrollTo(0, 0);
+    setIsSubmitting(true);
+    setOrderError('');
+
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: `${formData.firstName} ${formData.lastName}`.trim(),
+          customerEmail: formData.email,
+          customerPhone: formData.phone || '+92 300 0000000',
+          shippingAddress: `${formData.address}, ${formData.city} ${formData.zipCode}`.trim(),
+          items: cart.map((item) => ({
+            productId: item.id,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to place order');
+
+      setPlacedOrderNumber(data.orderNumber);
+      placeOrder(formData);
+      setIsSuccess(true);
+      window.scrollTo(0, 0);
+    } catch (err: any) {
+      setOrderError(err.message || 'Error processing checkout. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {
@@ -58,22 +91,25 @@ export default function CheckoutPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-2xl w-full bg-brand-green-rich border border-brand-gold/20 p-12 md:p-20 text-center"
+          className="max-w-2xl w-full bg-brand-green-rich border border-brand-gold/20 p-10 md:p-16 text-center shadow-2xl"
         >
-          <div className="flex justify-center mb-8">
-            <CheckCircle2 size={72} className="text-brand-gold" strokeWidth={1} />
+          <div className="flex justify-center mb-6">
+            <CheckCircle2 size={68} className="text-brand-gold" strokeWidth={1} />
           </div>
-          <h1 className="text-4xl md:text-5xl font-serif text-white mb-6">Thank You.</h1>
-          <p className="text-white/60 mb-12 italic leading-relaxed">
-            Your order has been placed successfully. A confirmation will be sent to{' '}
-            <span className="text-brand-gold">{formData.email || 'your email'}</span>. Our artisans are now preparing your signature fragrances.
+          <span className="text-[10px] uppercase tracking-[0.35em] text-brand-gold font-semibold block mb-2">
+            Order #{placedOrderNumber}
+          </span>
+          <h1 className="text-3xl md:text-5xl font-serif text-white mb-6">Thank You for Your Order</h1>
+          <p className="text-white/70 mb-10 italic leading-relaxed text-sm md:text-base">
+            Your signature order <strong>#{placedOrderNumber}</strong> has been received. All updates, tracking status, and delivery notifications will be sent directly to{' '}
+            <strong className="text-brand-gold not-italic">{formData.email}</strong>.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/account"
+              href="/fragrance"
               className="w-full sm:w-auto px-10 py-4 bg-brand-gold text-brand-green-dark text-[10px] uppercase tracking-widest font-bold hover:bg-white transition-colors"
             >
-              View Order History
+              Continue Shopping
             </Link>
             <Link
               href="/"
@@ -109,21 +145,38 @@ export default function CheckoutPage() {
           <h1 className="text-4xl md:text-5xl font-serif text-white mb-10">Checkout</h1>
 
           <form onSubmit={handleSubmit} className="space-y-10">
+            {orderError && (
+              <div className="p-4 bg-red-900/40 border border-red-500/50 rounded-sm text-sm text-red-200">
+                {orderError}
+              </div>
+            )}
+
             {/* Contact */}
             <div>
               <h2 className="text-xs uppercase tracking-[0.3em] font-bold text-brand-gold mb-6 flex items-center gap-3">
                 <span className="w-6 h-6 rounded-full bg-brand-gold text-brand-green-dark flex items-center justify-center text-[10px] font-bold">1</span>
-                Contact Information
+                Contact Information (Guest Checkout)
               </h2>
-              <input
-                required
-                type="email"
-                name="email"
-                placeholder="Email Address"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={inputClass}
-              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input
+                  required
+                  type="email"
+                  name="email"
+                  placeholder="Email Address (for order updates)"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={inputClass}
+                />
+                <input
+                  required
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number (e.g. +92 300 1234567)"
+                  value={formData.phone || ''}
+                  onChange={handleInputChange}
+                  className={inputClass}
+                />
+              </div>
             </div>
 
             {/* Shipping */}
@@ -170,9 +223,10 @@ export default function CheckoutPage() {
 
             <button
               type="submit"
-              className="w-full bg-brand-gold text-brand-green-dark py-5 text-xs uppercase tracking-[0.4em] font-bold hover:bg-white transition-all duration-500"
+              disabled={isSubmitting}
+              className="w-full bg-brand-gold text-brand-green-dark py-5 text-xs uppercase tracking-[0.4em] font-bold hover:bg-white transition-all duration-500 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Place Signature Order
+              {isSubmitting ? 'Securing Your Order…' : 'Place Signature Order'}
             </button>
 
             <div className="flex items-center justify-center gap-8 py-6 border-t border-white/10">

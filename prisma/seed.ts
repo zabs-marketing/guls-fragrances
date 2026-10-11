@@ -268,6 +268,115 @@ async function main() {
     }
   }
 
+  // 4. Seed initial realistic orders
+  const sampleOrders = [
+    {
+      orderNumber: 'GUL-2026-10492',
+      customerName: 'Hamza Tariq',
+      customerEmail: 'hamza.tariq@gmail.com',
+      customerPhone: '+92 300 8274192',
+      shippingAddress: 'House 42, Street 7, Phase 6, DHA, Karachi',
+      status: 'PENDING' as const,
+      totalAmount: 435.00,
+      cancellationReason: null,
+      items: [
+        { productName: 'Hassan Gul', quantity: 1, price: 240.00 },
+        { productName: 'Gen X', quantity: 1, price: 195.00 },
+      ],
+    },
+    {
+      orderNumber: 'GUL-2026-10493',
+      customerName: 'Ayesha Siddiqui',
+      customerEmail: 'ayesha.s@outlook.com',
+      customerPhone: '+92 321 4459821',
+      shippingAddress: 'Apartment 5B, Creek Vistas, Phase 8, DHA, Karachi',
+      status: 'CONFIRMED' as const,
+      totalAmount: 420.00,
+      cancellationReason: null,
+      items: [
+        { productName: 'Bring Her', quantity: 1, price: 185.00 },
+        { productName: 'Jaweria Gul', quantity: 1, price: 230.00 },
+      ],
+    },
+    {
+      orderNumber: 'GUL-2026-10494',
+      customerName: 'Bilal Khan',
+      customerEmail: 'bilalkhan.pk@gmail.com',
+      customerPhone: '+92 333 9120485',
+      shippingAddress: 'B-14, Block 4, Clifton, Karachi',
+      status: 'DISPATCHED' as const,
+      totalAmount: 210.00,
+      cancellationReason: null,
+      items: [
+        { productName: 'Syfar', quantity: 1, price: 210.00 },
+      ],
+    },
+    {
+      orderNumber: 'GUL-2026-10495',
+      customerName: 'Zainab Fatima',
+      customerEmail: 'zainab.fatima@hotmail.com',
+      customerPhone: '+92 312 8763290',
+      shippingAddress: 'Villa 18, Tipu Sultan Road, Karachi',
+      status: 'COMPLETED' as const,
+      totalAmount: 400.00,
+      cancellationReason: null,
+      items: [
+        { productName: 'BAOW', quantity: 1, price: 180.00 },
+        { productName: 'Laizon', quantity: 1, price: 220.00 },
+      ],
+    },
+    {
+      orderNumber: 'GUL-2026-10496',
+      customerName: 'Omar Farooq',
+      customerEmail: 'omar.farooq@yahoo.com',
+      customerPhone: '+92 345 2291044',
+      shippingAddress: 'Plot 77, KDA Scheme 1, Karachi',
+      status: 'CANCELLED' as const,
+      totalAmount: 175.00,
+      cancellationReason: 'Customer requested change of shipping address and placed a new order.',
+      items: [
+        { productName: 'Gen Z', quantity: 1, price: 175.00 },
+      ],
+    },
+  ];
+
+  for (const o of sampleOrders) {
+    const existingOrder = await prisma.order.findUnique({
+      where: { orderNumber: o.orderNumber },
+    });
+
+    if (!existingOrder) {
+      const orderItemsToCreate: { productId: number; quantity: number; priceAtPurchase: number }[] = [];
+      for (const it of o.items) {
+        const prod = await prisma.product.findFirst({ where: { name: it.productName } });
+        if (prod) {
+          orderItemsToCreate.push({
+            productId: prod.id,
+            quantity: it.quantity,
+            priceAtPurchase: it.price,
+          });
+        }
+      }
+
+      await prisma.order.create({
+        data: {
+          orderNumber: o.orderNumber,
+          customerName: o.customerName,
+          customerEmail: o.customerEmail,
+          customerPhone: o.customerPhone,
+          shippingAddress: o.shippingAddress,
+          status: o.status,
+          totalAmount: o.totalAmount,
+          cancellationReason: o.cancellationReason,
+          orderItems: {
+            create: orderItemsToCreate,
+          },
+        },
+      });
+      console.log(`Order seeded: #${o.orderNumber} (${o.status})`);
+    }
+  }
+
   console.log('Database seeded successfully!')
 }
 
