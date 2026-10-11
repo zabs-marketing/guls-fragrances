@@ -22,6 +22,13 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      // Cloudinary configuration added here
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   output: 'standalone',
