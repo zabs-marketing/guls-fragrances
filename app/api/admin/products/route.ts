@@ -97,6 +97,7 @@ export async function POST(req: Request) {
         ingredients: data.ingredients || null,
         isSpecialEdition: data.isSpecialEdition,
         specialEditionType: data.specialEditionType || null,
+        gender: data.gender,
       },
     });
     return NextResponse.json(product, { status: 201 });

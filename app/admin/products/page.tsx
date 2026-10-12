@@ -32,6 +32,7 @@ interface Product {
   ingredients: string | null;
   isSpecialEdition: boolean;
   specialEditionType: string | null;
+  gender: string;
   category: { id: number; name: string };
 }
 
@@ -92,6 +93,7 @@ function ProductFormModal({ product, categories, onClose, onSuccess }: ProductFo
       ingredients: product?.ingredients ?? '',
       isSpecialEdition: product?.isSpecialEdition ?? false,
       specialEditionType: product?.specialEditionType ?? '',
+      gender: (product?.gender as 'Men' | 'Women' | 'Unisex') ?? 'Unisex',
     },
   });
 
@@ -157,6 +159,16 @@ function ProductFormModal({ product, categories, onClose, onSuccess }: ProductFo
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
+              </Field>
+              <Field label="Gender Target" error={errors.gender?.message}>
+                <div className="relative">
+                  <select {...register('gender')} className={`${inputCls} appearance-none pr-10 bg-white`}>
+                    <option value="Men">Men</option>
+                    <option value="Women">Women</option>
+                    <option value="Unisex">Unisex</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>

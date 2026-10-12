@@ -21,31 +21,56 @@ async function main() {
   })
   console.log('Admin user ready:', admin.email)
 
-  // 2. Create the 4 core Categories matching the brand editions
+  // 2. Create Categories: 4 Signature Editions + 3 Standard Demographics
   const categoriesData = [
     {
       name: 'Masculine Energy',
       slug: 'masculine-energy',
       image: '/images/gen-x.jpeg',
       isActive: true,
+      isSignatureEdition: true,
     },
     {
       name: 'Pour Elle',
       slug: 'pour-elle',
       image: '/images/bring-her.jpeg',
       isActive: true,
+      isSignatureEdition: true,
     },
     {
       name: 'N°01 - For All',
       slug: 'for-all',
       image: '/images/after-5.jpeg',
       isActive: true,
+      isSignatureEdition: true,
     },
     {
       name: 'Arabesques',
       slug: 'arabesques',
       image: '/images/syfar.jpeg',
       isActive: true,
+      isSignatureEdition: true,
+    },
+    {
+      name: 'Men',
+      slug: 'men',
+      image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1000&auto=format&fit=crop',
+      isActive: true,
+      isSignatureEdition: false,
+    },
+    {
+      name: 'Women',
+      slug: 'women',
+      image: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=1000&auto=format&fit=crop',
+      isActive: true,
+      isSignatureEdition: false,
+    },
+    {
+      name: 'Unisex',
+      slug: 'unisex',
+      image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1000&auto=format&fit=crop',
+      isActive: true,
+      isSignatureEdition: false,
     },
   ]
 
@@ -58,6 +83,7 @@ async function main() {
         name: cat.name,
         image: cat.image,
         isActive: cat.isActive,
+        isSignatureEdition: cat.isSignatureEdition,
       },
       create: cat,
     })

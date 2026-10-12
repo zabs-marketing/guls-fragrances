@@ -5,27 +5,47 @@
   --font-serif: var(--font-playfair), serif;
   --font-sans: var(--font-inter), sans-serif;
   
-  /* Gul's Collection Brand Colors — Canonical Design System */
-  --color-brand-green-dark: #07130a;   /* Very deep green/almost black for backgrounds */
-  --color-brand-green-rich: #07130a;   /* Rich forest green for cards/sections */
-  --color-brand-gold: #cba365;         /* Canonical gold — the Gul's signature */
-  --color-brand-gold-light: #ddd0ae;   /* Lighter gold for hover states or subtle borders */
+  /* Luxury Minimalist Brand Colors */
+  --color-brand-light: #fafafa;
   --color-brand-white: #ffffff;
-  --color-brand-offwhite: #f5f5f5;
-  --color-brand-charcoal: #1a1a1a;
+  --color-brand-offwhite: #f7f7f5;
+  --color-brand-black: #121212;
+  --color-brand-charcoal: #1e1e1e;
+  --color-brand-muted: #6b7280;
+  --color-brand-border: #e5e7eb;
+  --color-brand-border-light: #f0f0ee;
+  
+  /* Rich Forest / Emerald Green (Accent Only) */
+  --color-brand-green: #0a3d24;
+  --color-brand-green-dark: #062617;
+  --color-brand-green-light: #14532d;
+  
+  /* Subtle Gold Accents */
+  --color-brand-gold: #cba365;
+  --color-brand-gold-light: #e0c595;
+
+  /* Soft 3D Elevation Shadows */
+  --shadow-soft-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.04), 0 1px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-soft-md: 0 6px 20px -4px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  --shadow-soft-lg: 0 12px 32px -6px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+  --shadow-soft-xl: 0 20px 48px -8px rgba(0, 0, 0, 0.10), 0 8px 18px -3px rgba(0, 0, 0, 0.04);
+  --shadow-soft-elevated: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 20px 40px -10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 @layer base {
   body {
-    @apply font-sans bg-brand-green-dark text-brand-white antialiased overflow-x-hidden;
+    @apply font-sans bg-brand-white text-brand-black antialiased overflow-x-hidden selection:bg-brand-green/10 selection:text-brand-green;
+    background-color: #ffffff;
+    color: #121212;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif font-normal;
+    @apply font-serif text-brand-black tracking-tight;
   }
   
   html {
     scroll-behavior: smooth;
+    background-color: #ffffff;
   }
 }
 
@@ -34,23 +54,17 @@
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #07130a;
+  background: #f7f7f5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1a2e1d;
+  background: #d1d5db;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #cba365;
+  background: #0a3d24;
 }
 
-/* Selection color */
-::selection {
-  background-color: #cba365;
-  color: #07130a;
-}
-
-/* Hide scrollbar utility — replaces deprecated styled-jsx usage in SignatureFragrances */
+/* Hide scrollbar utility */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }

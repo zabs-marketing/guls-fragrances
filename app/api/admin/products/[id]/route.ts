@@ -64,6 +64,7 @@ export async function PATCH(req: Request, { params }: Params) {
         ingredients: data.ingredients || null,
         isSpecialEdition: data.isSpecialEdition,
         specialEditionType: data.specialEditionType || null,
+        gender: data.gender,
       },
     });
     return NextResponse.json(updated);

@@ -41,6 +41,7 @@ export const productSchema = z.object({
   ingredients: z.string().optional().or(z.literal('')),
   isSpecialEdition: z.boolean(),
   specialEditionType: z.string().max(100).optional().or(z.literal('')),
+  gender: z.enum(['Men', 'Women', 'Unisex']),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;

@@ -26,11 +26,13 @@ model Category {
   id        Int       @id @default(autoincrement())
   name      String
   slug      String    @unique
-  image     String?
-  isActive  Boolean   @default(true)
-  products  Product[]
+  image              String?
+  isActive           Boolean   @default(true)
+  isSignatureEdition Boolean   @default(false)
+  products           Product[]
 
   @@index([isActive])
+  @@index([isSignatureEdition])
 }
 
 model Product {
@@ -49,10 +51,12 @@ model Product {
   ingredients        String?     @db.Text
   isSpecialEdition   Boolean     @default(false)
   specialEditionType String?
+  gender             String      @default("Unisex")
   orderItems         OrderItem[]
 
   @@index([categoryId])
   @@index([price])
+  @@index([gender])
 }
 
 enum OrderStatus {
