@@ -61,7 +61,6 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Fragrances', href: '/fragrance' },
-    { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
 
@@ -72,7 +71,7 @@ export default function Navbar() {
           'fixed top-0 left-0 w-full z-40 transition-all duration-300 ease-in-out px-6 md:px-14',
           isScrolled
             ? 'bg-brand-green-dark/95 backdrop-blur-md shadow-soft-md'
-            : 'bg-brand-green-dark/80 backdrop-blur-sm'
+            : 'bg-brand-green-dark backdrop-blur-sm'
         )}
       >
         <div className="max-w-7xl mx-auto h-[91px] flex items-center justify-between">

@@ -34,9 +34,9 @@ export default async function CollectionsShowcase() {
         
         {/* --- Top Section: 4 Editions Cards --- */}
         <div className="text-center mb-12">
-          <p className="font-sans text-[11px] tracking-[0.25em] text-[#C9A66B] uppercase font-semibold mb-3">Our Collection</p>
+          <p className="font-sans text-[16px] tracking-[0.25em] text-[#C9A66B] uppercase font-bold mb-3">Our Collection</p>
           <h2 className="font-serif text-[32px] md:text-[40px] font-bold text-[#C9A66B] uppercase leading-tight">Edition One To Four <br /> Crafted With Distinction</h2>
-          <p className="font-sans text-[10px] tracking-[0.1em] text-[#8C7A5B] uppercase">Curated Masterpieces</p>
+          <p className="font-sans text-[14px] tracking-[0.1em] text-[#8C7A5B] uppercase">Curated Masterpieces</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full max-w-5xl mx-auto mb-32">
@@ -59,7 +59,7 @@ export default async function CollectionsShowcase() {
 
         {/* --- Signature Fragrances Main Header --- */}
         <div className="text-center w-full mb-16">
-          <p className="font-sans text-[11px] tracking-[0.25em] text-[#C9A66B] uppercase font-semibold mb-3">Collection</p>
+          <p className="font-sans text-[16px] tracking-[0.25em] text-[#C9A66B] uppercase font-bold mb-3">Collection</p>
           <h2 className="font-serif text-[36px] md:text-[45px] font-bold text-[#C9A66B] uppercase mb-2">Signature Fragrances</h2>
           <p className="font-serif italic text-[16px] text-[#29251D] font-medium">Decades by Gul&apos;s</p>
         </div>

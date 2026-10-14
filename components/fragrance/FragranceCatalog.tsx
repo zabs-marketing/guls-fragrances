@@ -3,10 +3,9 @@
 import { useState, useTransition, useEffect } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import {
-  Search, SlidersHorizontal, X,
-  ChevronLeft, ChevronRight, Check, Sparkles
+  Search, X, ChevronLeft, ChevronRight, Sparkles
 } from 'lucide-react';
-import ProductCard from '@/components/ui/ProductCard';
+import { ProductCard } from '../ui/ProductCard';
 import PremiumSelect, { SelectOption } from '@/components/ui/PremiumSelect';
 
 export interface CatalogProduct {
@@ -116,7 +115,7 @@ export default function FragranceCatalog({
       }
     }, 350);
     return () => clearTimeout(handler);
-  }, [search]);
+  }, [search, initialSearch]);
 
   const handleCategoryChange = (val: string) => {
     updateQueryParams({ collection: val === 'All' ? null : val, page: '1' });
@@ -155,30 +154,30 @@ export default function FragranceCatalog({
   return (
     <section id="catalog-products-top" className="py-12 px-4 sm:px-6 md:px-12 lg:px-16 max-w-7xl mx-auto w-full">
       {/* ─── Premium Filter Bar ────────────────────────────────────────── */}
-      <div className="bg-brand-white p-5 md:p-6 rounded-md shadow-soft-elevated border border-brand-black/5 mb-10">
+      <div className="bg-white p-5 md:p-6 rounded-sm shadow-soft-md border border-[#C9A66B]/20 mb-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
           {/* Search Box */}
           <div className="md:col-span-4 relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-muted pointer-events-none" size={15} />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8C7A5B] pointer-events-none" size={15} />
             <input
               type="text"
               placeholder="Search by scent, brand, notes…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-brand-offwhite border border-brand-black/10 rounded-xs py-2.5 pl-10 pr-9 text-xs text-brand-black placeholder-brand-muted focus:outline-none focus:border-brand-green transition-all"
+              className="w-full bg-[#F7F7F5] border border-[#C9A66B]/30 rounded-sm py-2.5 pl-10 pr-9 text-[13px] text-[#29251D] placeholder-[#8C7A5B] focus:outline-none focus:border-[#C9A66B] transition-all"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted hover:text-brand-black cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8C7A5B] hover:text-[#183629] cursor-pointer"
               >
                 <X size={14} />
               </button>
             )}
           </div>
 
-          {/* Gender Filter (Custom PremiumSelect) */}
+          {/* Gender Filter */}
           <div className="md:col-span-2">
             <PremiumSelect
               options={GENDER_OPTIONS}
@@ -188,7 +187,7 @@ export default function FragranceCatalog({
             />
           </div>
 
-          {/* Category Filter (Custom PremiumSelect) */}
+          {/* Category Filter */}
           <div className="md:col-span-3">
             <PremiumSelect
               options={categoryOptions}
@@ -198,7 +197,7 @@ export default function FragranceCatalog({
             />
           </div>
 
-          {/* Sort By (Custom PremiumSelect) */}
+          {/* Sort By */}
           <div className="md:col-span-3">
             <PremiumSelect
               options={SORT_OPTIONS}
@@ -211,46 +210,34 @@ export default function FragranceCatalog({
 
         {/* Active Filter Tags */}
         {hasActiveFilters && (
-          <div className="mt-4 pt-4 border-t border-brand-black/5 flex flex-wrap items-center justify-between gap-3">
+          <div className="mt-4 pt-4 border-t border-[#C9A66B]/20 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-brand-muted font-semibold font-sans">
-                Active Filters:
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#8C7A5B] font-semibold font-sans">
+                Filters:
               </span>
 
               {activeCollectionName && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xs bg-brand-offwhite border border-brand-black/10 text-[11px] text-brand-black font-sans">
-                  <span>Collection: {activeCollectionName}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleCategoryChange('All')}
-                    className="hover:text-brand-green cursor-pointer"
-                  >
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-[#183629] text-[11px] text-[#F3E9D7] font-sans">
+                  <span>{activeCollectionName}</span>
+                  <button type="button" onClick={() => handleCategoryChange('All')} className="hover:text-[#C9A66B] cursor-pointer">
                     <X size={12} />
                   </button>
                 </span>
               )}
 
               {selectedGender && selectedGender !== 'All' && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xs bg-brand-offwhite border border-brand-black/10 text-[11px] text-brand-black font-sans">
-                  <span>Gender: {selectedGender}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleGenderChange('All')}
-                    className="hover:text-brand-green cursor-pointer"
-                  >
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-[#183629] text-[11px] text-[#F3E9D7] font-sans">
+                  <span>{selectedGender}</span>
+                  <button type="button" onClick={() => handleGenderChange('All')} className="hover:text-[#C9A66B] cursor-pointer">
                     <X size={12} />
                   </button>
                 </span>
               )}
 
               {search && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xs bg-brand-offwhite border border-brand-black/10 text-[11px] text-brand-black font-sans">
-                  <span>Search: &ldquo;{search}&rdquo;</span>
-                  <button
-                    type="button"
-                    onClick={() => setSearch('')}
-                    className="hover:text-brand-green cursor-pointer"
-                  >
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-[#183629] text-[11px] text-[#F3E9D7] font-sans">
+                  <span>&ldquo;{search}&rdquo;</span>
+                  <button type="button" onClick={() => setSearch('')} className="hover:text-[#C9A66B] cursor-pointer">
                     <X size={12} />
                   </button>
                 </span>
@@ -260,7 +247,7 @@ export default function FragranceCatalog({
             <button
               type="button"
               onClick={clearAllFilters}
-              className="text-[11px] font-medium text-brand-green hover:underline cursor-pointer inline-flex items-center gap-1"
+              className="text-[11px] font-medium text-[#183629] hover:text-[#C9A66B] uppercase tracking-widest cursor-pointer inline-flex items-center gap-1 transition-colors"
             >
               <X size={13} /> Reset All
             </button>
@@ -269,55 +256,51 @@ export default function FragranceCatalog({
       </div>
 
       {/* ─── Result Counter & Headline ─────────────────────────────────── */}
-      <div className="flex items-center justify-between mb-8 pb-3 border-b border-brand-black/5">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-3 border-b border-[#C9A66B]/30">
         <div>
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-black">
+          <h2 className="font-serif text-3xl md:text-[36px] text-[#C9A66B] font-bold uppercase tracking-wide">
             {activeCollectionName || (selectedGender && selectedGender !== 'All' ? `${selectedGender} Fragrances` : 'All Fragrances')}
           </h2>
-          <p className="text-brand-muted text-xs font-sans mt-0.5">
+          <p className="text-[#8C7A5B] text-xs font-sans tracking-[0.1em] uppercase mt-2">
             Showing {products.length} of {totalProducts} creations
-            {isPending && <span className="ml-2 text-brand-green font-medium animate-pulse">Filtering…</span>}
+            {isPending && <span className="ml-2 text-[#C9A66B] font-medium animate-pulse">Filtering…</span>}
           </p>
         </div>
       </div>
 
-      {/* ─── The Product Grid (2 cols mobile, 3 cols tablet, 4 cols desktop) ─── */}
+      {/* ─── The Product Grid (TS Error Fixed) ─────────────────────────── */}
       {products.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
           {products.map((product) => (
             <div key={product.id} className="h-full">
+              {/* ProductCard Props Mapped Directly To Fix TS2322 */}
               <ProductCard
-                product={{
-                  id: product.id,
-                  name: product.name,
-                  brand: product.brand,
-                  price: product.price,
-                  imageURL: product.imageURL,
-                  category: product.category,
-                  topNote: product.topNote,
-                  gender: product.gender,
-                  isSpecialEdition: product.isSpecialEdition,
-                }}
+                productId={product.id}
+                categoryName={product.category.name}
+                name={product.name}
+                target={product.gender || 'Unisex'}
+                description={product.description || 'A timeless fragrance crafted for elegance and presence.'}
+                imageSrc={product.imageURL || '/images/hassan-gul-bottle.png'}
               />
             </div>
           ))}
         </div>
       ) : (
         /* ─── Beautiful Empty State ───────────────────────────────────── */
-        <div className="text-center py-24 sm:py-32 px-6 bg-brand-light rounded-md border border-brand-black/5 shadow-soft-sm max-w-2xl mx-auto">
-          <div className="w-12 h-12 rounded-full bg-brand-white border border-brand-black/10 flex items-center justify-center mx-auto mb-4 text-brand-muted">
-            <Sparkles size={20} />
+        <div className="text-center py-24 sm:py-32 px-6 bg-white rounded-md border border-[#C9A66B]/20 shadow-soft-md max-w-2xl mx-auto">
+          <div className="w-14 h-14 rounded-full bg-[#183629] flex items-center justify-center mx-auto mb-6 text-[#C9A66B]">
+            <Sparkles size={24} />
           </div>
-          <h3 className="font-serif text-2xl sm:text-3xl text-brand-black mb-2">
+          <h3 className="font-serif text-2xl sm:text-3xl text-[#29251D] mb-3">
             No Fragrances Found
           </h3>
-          <p className="text-xs sm:text-sm text-brand-muted leading-relaxed font-sans mb-8 max-w-md mx-auto">
-            No fragrances found matching your criteria. Try adjusting your filters or clearing your search term.
+          <p className="text-[14px] text-[#8C7A5B] leading-relaxed font-sans mb-8 max-w-md mx-auto">
+            No fragrances found matching your current criteria. Try adjusting your filters or exploring another collection.
           </p>
           <button
             type="button"
             onClick={clearAllFilters}
-            className="px-8 py-3.5 bg-brand-black text-brand-white text-[11px] uppercase tracking-[0.2em] font-semibold rounded-xs hover:bg-brand-green transition-colors cursor-pointer shadow-soft-sm"
+            className="px-8 py-3.5 bg-[#183629] text-[#F3E9D7] text-[11px] uppercase tracking-[0.2em] font-semibold hover:bg-[#11261d] hover:text-[#C9A66B] transition-colors cursor-pointer shadow-md"
           >
             Clear All Filters
           </button>
@@ -326,16 +309,16 @@ export default function FragranceCatalog({
 
       {/* ─── Server-Side Pagination Bar ───────────────────────────────── */}
       {totalPages > 1 && (
-        <div className="mt-16 pt-8 border-t border-brand-black/5 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans">
-          <span className="text-xs text-brand-muted tracking-wide">
+        <div className="mt-16 pt-8 border-t border-[#C9A66B]/30 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans">
+          <span className="text-[11px] text-[#8C7A5B] tracking-widest uppercase">
             Page {currentPage} of {totalPages}
           </span>
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage <= 1 || isPending}
-              className="p-2 border border-brand-black/10 text-brand-black rounded-xs hover:border-brand-green hover:text-brand-green disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="p-2 border border-[#C9A66B]/30 text-[#183629] rounded-sm hover:border-[#C9A66B] hover:text-[#C9A66B] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               aria-label="Previous Page"
             >
               <ChevronLeft size={16} />
@@ -346,10 +329,10 @@ export default function FragranceCatalog({
                 key={pg}
                 onClick={() => handlePageChange(pg)}
                 disabled={isPending}
-                className={`w-8 h-8 text-xs font-semibold rounded-xs transition-colors cursor-pointer ${
+                className={`w-9 h-9 text-xs font-semibold rounded-sm transition-colors cursor-pointer ${
                   currentPage === pg
-                    ? 'bg-brand-black text-brand-white font-bold'
-                    : 'border border-brand-black/10 text-brand-charcoal hover:border-brand-green hover:text-brand-green'
+                    ? 'bg-[#183629] text-[#C9A66B] border border-[#183629]'
+                    : 'border border-[#C9A66B]/30 text-[#29251D] hover:border-[#C9A66B] hover:text-[#C9A66B]'
                 }`}
               >
                 {pg}
@@ -359,7 +342,7 @@ export default function FragranceCatalog({
             <button
               onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage >= totalPages || isPending}
-              className="p-2 border border-brand-black/10 text-brand-black rounded-xs hover:border-brand-green hover:text-brand-green disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="p-2 border border-[#C9A66B]/30 text-[#183629] rounded-sm hover:border-[#C9A66B] hover:text-[#C9A66B] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               aria-label="Next Page"
             >
               <ChevronRight size={16} />

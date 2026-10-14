@@ -126,14 +126,20 @@ export default async function FragrancePage({ searchParams }: FragrancePageProps
   const totalPages = Math.ceil(totalCount / pageSize) || 1;
 
   return (
-    <main className="min-h-screen bg-brand-white text-brand-black selection:bg-brand-green/10 selection:text-brand-green">
+    <main className="min-h-screen bg-[#F7F7F5] text-[#29251D] selection:bg-[#C9A66B]/30 selection:text-[#183629]">
       <Navbar />
 
       {/* Sleek Native Shop Hero with Minimal Signature Edition Pills */}
       <ShopHero signatureEditions={signatureEditions} activeCategory={collection} />
 
       {/* Interactive Catalog Component */}
-      <Suspense fallback={<div className="min-h-[400px] flex items-center justify-center text-brand-muted font-sans text-xs">Loading collections…</div>}>
+      <Suspense 
+        fallback={
+          <div className="min-h-[400px] flex items-center justify-center text-[#C9A66B] font-sans text-sm uppercase tracking-widest font-medium">
+            Loading collections...
+          </div>
+        }
+      >
         <FragranceCatalog
           products={products}
           categories={rawCategories}

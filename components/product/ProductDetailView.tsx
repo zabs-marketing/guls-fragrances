@@ -6,10 +6,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, Minus, Plus, ChevronDown, ArrowLeft } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { useStore } from '@/context/StoreContext';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/Button';
 
 export interface FormattedProduct {
   id: string | number;
@@ -35,24 +34,9 @@ export default function ProductDetailView({ product }: { product: FormattedProdu
   const [quantity, setQuantity] = useState(1);
   const [activeAccordion, setActiveAccordion] = useState<string | null>('notes');
 
-  if (!product) {
-    return (
-      <main className="min-h-screen bg-brand-green-dark text-white flex flex-col items-center justify-center">
-        <Navbar />
-        <div className="text-center px-4">
-          <h1 className="font-serif text-4xl text-brand-gold mb-4">Product Not Found</h1>
-          <p className="text-white/60 mb-8">The fragrance you are looking for does not exist or has been removed.</p>
-          <Link
-            href="/fragrance"
-            className="px-8 py-3 border border-brand-gold text-brand-gold text-[10px] uppercase tracking-widest font-bold hover:bg-brand-gold hover:text-brand-green-dark transition-colors"
-          >
-            Back to Collection
-          </Link>
-        </div>
-        <Footer />
-      </main>
-    );
-  }
+  // Fallback state is handled by the parent page component (ProductDetailsPage), 
+  // but keeping a safety check here just in case.
+  if (!product) return null;
 
   const handleAddToCart = () => {
     addToCart(product.id.toString(), quantity, {
@@ -67,231 +51,232 @@ export default function ProductDetailView({ product }: { product: FormattedProdu
   };
 
   return (
-    <main className="min-h-screen bg-brand-green-dark text-white selection:bg-brand-gold selection:text-brand-green-dark">
-      <Navbar />
+    <div className="w-full bg-[#F7F7F5] pb-20 pt-8 px-6 md:px-14 max-w-7xl mx-auto">
+      {/* Back Button & Breadcrumbs */}
+      <div className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center space-x-2 text-[#8C7A5B] hover:text-[#183629] transition-colors text-[10px] uppercase tracking-[0.2em] font-bold"
+        >
+          <ArrowLeft size={14} />
+          <span>Back to Collection</span>
+        </button>
 
-      <div className="pt-28 pb-20 px-6 md:px-14 max-w-7xl mx-auto">
-        {/* Back Button & Breadcrumbs */}
-        <div className="mb-8 flex items-center justify-between">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center space-x-2 text-white/60 hover:text-brand-gold transition-colors text-[10px] uppercase tracking-widest font-bold"
-          >
-            <ArrowLeft size={14} />
-            <span>Back</span>
-          </button>
+        <nav className="hidden md:flex items-center space-x-3 text-[10px] uppercase tracking-[0.2em] font-medium text-[#8C7A5B]">
+          <Link href="/" className="hover:text-[#183629] transition-colors">Home</Link>
+          <span>/</span>
+          <Link href="/fragrance" className="hover:text-[#183629] transition-colors">Fragrance</Link>
+          <span>/</span>
+          <span className="text-[#C9A66B] font-semibold">{product.name}</span>
+        </nav>
+      </div>
 
-          <nav className="hidden md:flex items-center space-x-2 text-[10px] uppercase tracking-widest text-white/40">
-            <Link href="/" className="hover:text-brand-gold transition-colors">Home</Link>
-            <span>/</span>
-            <Link href="/fragrance" className="hover:text-brand-gold transition-colors">Fragrance</Link>
-            <span>/</span>
-            <span className="text-brand-gold">{product.name}</span>
-          </nav>
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
-          {/* Left: Image */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="w-full lg:w-1/2"
-          >
-            <div className="relative aspect-[4/5] w-full bg-brand-green-rich rounded-sm overflow-hidden border border-brand-gold/10">
-              {product.isSpecialEdition && (
-                <div className="absolute top-6 right-6 z-20 bg-brand-gold text-brand-green-dark text-[10px] uppercase tracking-[0.2em] font-bold px-4 py-2 rounded-xs shadow-xl">
-                  {product.specialEditionType ? `${product.specialEditionType} Special Edition` : 'Special Edition'}
-                </div>
-              )}
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-            </div>
-          </motion.div>
-
-          {/* Right: Product Details */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="w-full lg:w-1/2 flex flex-col pt-4 md:pt-8"
-          >
-            <p className="text-[10px] uppercase tracking-[0.3em] font-semibold text-brand-gold mb-3">
-              {product.categoryTitle}
-            </p>
-            <h1 className="text-3xl md:text-5xl font-serif text-white mb-4">
-              {product.name}
-            </h1>
-            <p className="text-xl md:text-2xl font-serif text-brand-gold mb-6">
-              PKR {product.price.toLocaleString()}
-            </p>
-
-            <p className="text-sm text-white/70 italic leading-relaxed mb-10">
-              &ldquo;{product.description}&rdquo;
-            </p>
-
-            {/* Quantity & Add to Cart */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
-              <div className="flex items-center justify-between border border-white/20 rounded-xs w-full sm:w-1/3 px-4 py-3 bg-white/5">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="text-white/60 hover:text-brand-gold transition-colors p-1"
-                >
-                  <Minus size={16} />
-                </button>
-                <span className="text-sm font-medium">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="text-white/60 hover:text-brand-gold transition-colors p-1"
-                >
-                  <Plus size={16} />
-                </button>
+      <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+        {/* Left: Product Image */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="w-full lg:w-1/2"
+        >
+          <div className="relative aspect-[4/5] w-full bg-white shadow-soft-elevated rounded-sm overflow-hidden border border-[#C9A66B]/20">
+            {product.isSpecialEdition && (
+              <div className="absolute top-6 right-6 z-20 bg-[#183629] text-[#F3E9D7] text-[10px] uppercase tracking-[0.2em] font-bold px-4 py-2 rounded-sm shadow-md border border-[#C9A66B]/30">
+                {product.specialEditionType ? `${product.specialEditionType} Special Edition` : 'Special Edition'}
               </div>
+            )}
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              priority
+              className="object-contain object-center scale-95"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+          </div>
+        </motion.div>
 
+        {/* Right: Product Details */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="w-full lg:w-1/2 flex flex-col pt-2 lg:pt-8"
+        >
+          {/* Header Info */}
+          <p className="text-[11px] uppercase tracking-[0.25em] font-bold text-[#8C7A5B] mb-3">
+            {product.categoryTitle}
+          </p>
+          <h1 className="text-4xl md:text-5xl font-serif text-[#183629] font-bold tracking-wide uppercase mb-4 leading-tight">
+            {product.name}
+          </h1>
+          <p className="text-2xl font-serif text-[#C9A66B] mb-8 font-medium">
+            PKR {product.price.toLocaleString()}
+          </p>
+
+          <p className="text-[15px] font-sans text-[#29251D]/80 leading-relaxed mb-10 pr-0 lg:pr-8">
+            {product.description}
+          </p>
+
+          {/* Quantity & Add to Cart */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-12">
+            <div className="flex items-center justify-between border border-[#C9A66B]/40 rounded-sm w-full sm:w-1/3 px-5 py-3 bg-white">
               <button
-                onClick={handleAddToCart}
-                className="flex-1 w-full flex items-center justify-center space-x-2 bg-brand-gold text-brand-green-dark py-4 text-[11px] uppercase tracking-widest font-bold hover:bg-white transition-colors rounded-xs shadow-lg"
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="text-[#8C7A5B] hover:text-[#183629] transition-colors p-1"
+                aria-label="Decrease quantity"
               >
-                <ShoppingBag size={16} />
-                <span>Add to Cart — PKR {(product.price * quantity).toLocaleString()}</span>
+                <Minus size={16} />
+              </button>
+              <span className="text-[14px] font-medium text-[#183629]">{quantity}</span>
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="text-[#8C7A5B] hover:text-[#183629] transition-colors p-1"
+                aria-label="Increase quantity"
+              >
+                <Plus size={16} />
               </button>
             </div>
 
-            {/* Accordions */}
-            <div className="border-t border-white/10">
-              {/* Fragrance Notes */}
-              {(product.topNote || product.heartNote || product.baseNote) && (
-                <div className="border-b border-white/10">
-                  <button
-                    onClick={() => toggleAccordion('notes')}
-                    className="w-full py-5 flex items-center justify-between text-left focus:outline-none group"
-                  >
-                    <span className="text-[11px] uppercase tracking-[0.2em] font-semibold group-hover:text-brand-gold transition-colors">
-                      Fragrance Notes
-                    </span>
-                    <ChevronDown
-                      size={16}
-                      className={cn(
-                        'text-white/40 transition-transform duration-300',
-                        activeAccordion === 'notes' ? 'rotate-180 text-brand-gold' : ''
-                      )}
-                    />
-                  </button>
-                  <AnimatePresence>
-                    {activeAccordion === 'notes' && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pb-6 space-y-4">
-                          {product.topNote && (
-                            <div>
-                              <p className="text-[10px] uppercase tracking-widest text-brand-gold font-bold mb-1">Top Notes</p>
-                              <p className="text-sm text-white/70">{product.topNote}</p>
-                            </div>
-                          )}
-                          {product.heartNote && (
-                            <div>
-                              <p className="text-[10px] uppercase tracking-widest text-brand-gold font-bold mb-1">Heart Notes</p>
-                              <p className="text-sm text-white/70">{product.heartNote}</p>
-                            </div>
-                          )}
-                          {product.baseNote && (
-                            <div>
-                              <p className="text-[10px] uppercase tracking-widest text-brand-gold font-bold mb-1">Base Notes</p>
-                              <p className="text-sm text-white/70">{product.baseNote}</p>
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              )}
+            <Button
+              onClick={handleAddToCart}
+              className="flex-1 w-full flex items-center justify-center space-x-3 bg-[#183629] text-[#F3E9D7] hover:bg-[#11261d] hover:text-[#C9A66B] transition-colors tracking-[0.15em] text-[12px] py-4 rounded-sm shadow-md"
+            >
+              <ShoppingBag size={16} />
+              <span>ADD TO CART — PKR {(product.price * quantity).toLocaleString()}</span>
+            </Button>
+          </div>
 
-              {/* Ingredients */}
-              {product.ingredients && (
-                <div className="border-b border-white/10">
-                  <button
-                    onClick={() => toggleAccordion('ingredients')}
-                    className="w-full py-5 flex items-center justify-between text-left focus:outline-none group"
-                  >
-                    <span className="text-[11px] uppercase tracking-[0.2em] font-semibold group-hover:text-brand-gold transition-colors">
-                      Ingredients
-                    </span>
-                    <ChevronDown
-                      size={16}
-                      className={cn(
-                        'text-white/40 transition-transform duration-300',
-                        activeAccordion === 'ingredients' ? 'rotate-180 text-brand-gold' : ''
-                      )}
-                    />
-                  </button>
-                  <AnimatePresence>
-                    {activeAccordion === 'ingredients' && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pb-6">
-                          <p className="text-sm text-white/60 leading-relaxed">{product.ingredients}</p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              )}
-
-              {/* Shipping */}
-              <div className="border-b border-white/10">
+          {/* Accordions */}
+          <div className="border-t border-[#C9A66B]/30">
+            
+            {/* Fragrance Notes */}
+            {(product.topNote || product.heartNote || product.baseNote) && (
+              <div className="border-b border-[#C9A66B]/30">
                 <button
-                  onClick={() => toggleAccordion('delivery')}
+                  onClick={() => toggleAccordion('notes')}
                   className="w-full py-5 flex items-center justify-between text-left focus:outline-none group"
                 >
-                  <span className="text-[11px] uppercase tracking-[0.2em] font-semibold group-hover:text-brand-gold transition-colors">
-                    Shipping & Returns
+                  <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-[#183629] group-hover:text-[#C9A66B] transition-colors">
+                    Fragrance Notes
                   </span>
                   <ChevronDown
                     size={16}
                     className={cn(
-                      'text-white/40 transition-transform duration-300',
-                      activeAccordion === 'delivery' ? 'rotate-180 text-brand-gold' : ''
+                      'text-[#8C7A5B] transition-transform duration-300',
+                      activeAccordion === 'notes' ? 'rotate-180 text-[#C9A66B]' : ''
                     )}
                   />
                 </button>
                 <AnimatePresence>
-                  {activeAccordion === 'delivery' && (
+                  {activeAccordion === 'notes' && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="pb-6">
-                        <p className="text-sm text-white/60 leading-relaxed">
-                          Same-day and next-day delivery available exclusively across Karachi. Due to the personal nature of fragrances, we currently do not accept returns once the packaging has been opened.
+                      <div className="pb-6 pt-2 space-y-5">
+                        {product.topNote && (
+                          <div>
+                            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9A66B] font-bold mb-1.5">Top Notes</p>
+                            <p className="text-[13px] font-sans text-[#29251D]">{product.topNote}</p>
+                          </div>
+                        )}
+                        {product.heartNote && (
+                          <div>
+                            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9A66B] font-bold mb-1.5">Heart Notes</p>
+                            <p className="text-[13px] font-sans text-[#29251D]">{product.heartNote}</p>
+                          </div>
+                        )}
+                        {product.baseNote && (
+                          <div>
+                            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C9A66B] font-bold mb-1.5">Base Notes</p>
+                            <p className="text-[13px] font-sans text-[#29251D]">{product.baseNote}</p>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
+            {/* Ingredients */}
+            {product.ingredients && (
+              <div className="border-b border-[#C9A66B]/30">
+                <button
+                  onClick={() => toggleAccordion('ingredients')}
+                  className="w-full py-5 flex items-center justify-between text-left focus:outline-none group"
+                >
+                  <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-[#183629] group-hover:text-[#C9A66B] transition-colors">
+                    Ingredients
+                  </span>
+                  <ChevronDown
+                    size={16}
+                    className={cn(
+                      'text-[#8C7A5B] transition-transform duration-300',
+                      activeAccordion === 'ingredients' ? 'rotate-180 text-[#C9A66B]' : ''
+                    )}
+                  />
+                </button>
+                <AnimatePresence>
+                  {activeAccordion === 'ingredients' && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pb-6 pt-2">
+                        <p className="text-[13px] font-sans text-[#29251D]/80 leading-relaxed">
+                          {product.ingredients}
                         </p>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
+            )}
 
-      <Footer />
-    </main>
+            {/* Shipping */}
+            <div className="border-b border-[#C9A66B]/30">
+              <button
+                onClick={() => toggleAccordion('delivery')}
+                className="w-full py-5 flex items-center justify-between text-left focus:outline-none group"
+              >
+                <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-[#183629] group-hover:text-[#C9A66B] transition-colors">
+                  Shipping & Returns
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={cn(
+                    'text-[#8C7A5B] transition-transform duration-300',
+                    activeAccordion === 'delivery' ? 'rotate-180 text-[#C9A66B]' : ''
+                  )}
+                />
+              </button>
+              <AnimatePresence>
+                {activeAccordion === 'delivery' && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pb-6 pt-2">
+                      <p className="text-[13px] font-sans text-[#29251D]/80 leading-relaxed">
+                        Same-day and next-day delivery available exclusively across Karachi[cite: 31]. Due to the personal nature of fragrances, we currently do not accept returns once the packaging has been opened.
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+          </div>
+        </motion.div>
+      </div>
+    </div>
   );
 }
-

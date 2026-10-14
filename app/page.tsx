@@ -20,14 +20,15 @@ export default function Home() {
       <Hero />
       <AboutUs />
       <CollectionsShowcase />
+      <OurMission />
+      <WhyChooseUs />
+      <OurProcess />
+      <Footer />
       {/* <Demographics />
       <NewLaunches />
       <AllCollections />
       <FeaturedProducts />
-      <OurMission />
-      <WhyChooseUs />
-      <OurProcess />
-      <Footer /> */}
+       */}
     </main>
   );
 }
