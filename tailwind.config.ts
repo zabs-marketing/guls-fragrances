@@ -10,24 +10,19 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          light: '#fafafa',
           white: '#ffffff',
-          offwhite: '#f7f7f5',
-          black: '#121212',
-          charcoal: '#1e1e1e',
-          muted: '#6b7280',
-          border: '#e5e7eb',
-          'border-light': '#f0f0ee',
-          green: '#0a3d24',
-          'green-dark': '#062617',
-          'green-light': '#14532d',
-          gold: '#cba365',
-          'gold-light': '#e0c595',
+          offwhite: '#F3E9D7',
+          beige: '#D8C6A5',
+          black: '#29251D',
+          green: '#183629',
+          'green-dark': '#0B1B12',
+          gold: '#C9A66B',
+          'gold-light': '#E8D2A5',
         },
       },
       fontFamily: {
         serif: ['var(--font-playfair)', 'serif'],
-        sans: ['var(--font-inter)', 'sans-serif'],
+        sans: ['var(--font-montserrat)', 'sans-serif'], // Yahan Montserrat variable use kiya
       },
       boxShadow: {
         'soft-sm': '0 2px 8px -2px rgba(0, 0, 0, 0.04), 0 1px 4px -1px rgba(0, 0, 0, 0.02)',
@@ -42,4 +37,3 @@ const config: Config = {
 };
 
 export default config;
-

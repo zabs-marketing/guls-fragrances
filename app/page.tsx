@@ -1,11 +1,11 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/home/Hero';
 import Demographics from '@/components/home/Demographics';
-import NewLaunches from '@/components/home/NewLaunches';
+// import NewLaunches from '@/components/home/NewLaunches';
 import AboutUs from '@/components/home/AboutUs';
 import CollectionsShowcase from '@/components/home/CollectionsShowcase';
 import AllCollections from '@/components/home/AllCollections';
-import FeaturedProducts from '@/components/home/FeaturedProducts';
+// import FeaturedProducts from '@/components/home/FeaturedProducts';
 import OurMission from '@/components/home/OurMission';
 import WhyChooseUs from '@/components/home/WhyChooseUs';
 import OurProcess from '@/components/home/OurProcess';
@@ -18,16 +18,16 @@ export default function Home() {
     <main className="relative min-h-screen bg-brand-white text-brand-black">
       <Navbar />
       <Hero />
-      <Demographics />
-      <NewLaunches />
       <AboutUs />
       <CollectionsShowcase />
+      {/* <Demographics />
+      <NewLaunches />
       <AllCollections />
       <FeaturedProducts />
       <OurMission />
       <WhyChooseUs />
       <OurProcess />
-      <Footer />
+      <Footer /> */}
     </main>
   );
 }

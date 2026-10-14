@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter } from 'next/font/google';
+import { Playfair_Display, Montserrat } from 'next/font/google'; // Inter ki jagah Montserrat import kiya
 import './globals.css';
 import { StoreProvider } from '@/context/StoreContext'; 
 import NextTopLoader from 'nextjs-toploader';
@@ -12,9 +12,9 @@ const playfair = Playfair_Display({
   weight: ['400', '500', '600', '700'],
 });
 
-const inter = Inter({ 
+const montserrat = Montserrat({ // Inter function ko Montserrat se replace kiya
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-montserrat', // Variable name change kiya
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
 });
@@ -31,10 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+    // HTML tag mein montserrat.variable pass kiya
+    <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
       <body className="flex flex-col min-h-screen w-full relative bg-brand-white text-brand-black antialiased selection:bg-brand-green/10 selection:text-brand-green">
         <NextTopLoader
-          color="#0a3d24"
+          color="#183629" /* Top loader ab naye Figma brand green color ka hoga */
           initialPosition={0.08}
           crawlSpeed={200}
           height={2}
@@ -42,7 +43,7 @@ export default function RootLayout({
           showSpinner={false}
           easing="ease"
           speed={200}
-          shadow="0 0 10px #0a3d24,0 0 5px #0a3d24"
+          shadow="0 0 10px #183629,0 0 5px #183629" /* Shadow color bhi update kiya */
         />
         <StoreProvider>
           {/* Main content wrapper */}
