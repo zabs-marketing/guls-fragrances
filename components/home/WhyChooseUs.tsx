@@ -48,7 +48,7 @@ export default function WhyChooseUs() {
         <div className="absolute inset-0 bg-brand-green-dark/40 md:bg-brand-green-dark/20 z-10" />
       </div>
 
-      <div className="relative z-20 max-w-[1400px] mx-auto px-6 w-full flex flex-col items-center text-center">
+      <div className="relative z-20 max-w-[1400px] mx-auto px-6 w-full flex flex-col items-center text-center mb-15">
         
         {/* Headers */}
         <motion.div
@@ -58,7 +58,7 @@ export default function WhyChooseUs() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mb-14 flex flex-col items-center"
         >
-          <p className="font-sans text-[16px] md:text-[11px] tracking-[0.25em] text-brand-gold uppercase font-bold mb-4">
+          <p className="font-sans text-[16px] md:text-[11px] tracking-[0.25em] text-brand-gold uppercase font-bold mt-10 mb-4">
             Why Choose Us
           </p>
           <h2 className="font-serif text-[32px] md:text-[44px] lg:text-[50px] font-bold text-brand-gold uppercase tracking-wide leading-tight mb-4 drop-shadow-md">

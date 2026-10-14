@@ -56,7 +56,7 @@ export default function OurProcess() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="text-center mb-12 md:mb-16"
         >
-          <p className="font-sans text-[14px] md:text-[16px] tracking-[0.25em] text-[#C9A66B] uppercase font-bold mb-4">
+          <p className="font-sans text-[14px] md:text-[16px] tracking-[0.25em] text-[#C9A66B] uppercase font-bold mb-4 mt-10">
             Our Process
           </p>
           <h2 className="font-serif text-[28px] md:text-[44px] lg:text-[48px] font-bold text-[#C9A66B] uppercase tracking-wide leading-tight mb-4 drop-shadow-sm">
